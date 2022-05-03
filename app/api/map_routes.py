@@ -6,7 +6,8 @@ map_routes = Blueprint('map', __name__)
 
 
 @map_routes.route('/key', methods=['POST'])
-@login_required
+# @login_required
 def load_map_key():
     key = os.environ.get('MAPS_API_KEY')
+    print(key, 'in route!!!!!!!!!!!!!')
     return {'googleMapsAPIKey': key}

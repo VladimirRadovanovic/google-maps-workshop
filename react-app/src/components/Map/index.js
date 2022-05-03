@@ -14,7 +14,7 @@ const MapContainer = () => {
     }, [dispatch, key])
 
     if(!key) return null
-
+    console.log('map container', key)
     return (
         <Map apiKey={key} />
     )

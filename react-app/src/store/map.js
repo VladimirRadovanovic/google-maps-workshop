@@ -4,16 +4,22 @@ const LOAD_KEY = 'map/load_key'
 const loadKey = (key) => {
     return {
         type: LOAD_KEY,
-        key
+        payload: key
     }
 }
 
 export const getKey = () => async (dispatch) => {
-    const res = await fetch('/api/maps/key', {
+    const res = await fetch('/api/map/key', {
         method: 'POST'
     })
-    const data = await res.json()
-    dispatch(loadKey(data.googleMapsAPIKey))
+    console.log(res)
+    if (res.ok) {
+
+        const data = await res.json()
+        console.log(data.googleMapsAPIKey)
+        dispatch(loadKey(data.googleMapsAPIKey))
+
+    }
 }
 
 const initialState = {key: null}
@@ -21,7 +27,8 @@ const initialState = {key: null}
 const mapReducer= (state = initialState, action) => {
     switch(action.type){
         case LOAD_KEY:
-            return {key: action.key}
+            console.log('in reducer', action.payload)
+            return {key: action.payload}
         default:
             return state
     }
