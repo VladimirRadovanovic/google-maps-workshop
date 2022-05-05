@@ -10,6 +10,8 @@ class Listing(db.Model):
     state = db.Column(db.String)
     country = db.Column(db.String)
     price = db.Column(db.Float)
+    lat = db.Column(db.Numeric(15, 10))
+    lng = db.Column(db.Numeric(15, 10))
 
     def to_dict(self):
         return {
