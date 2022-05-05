@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useCallback } from 'react'
 
-import { GoogleMap, useLoadScript, Marker, MarkerClusterer } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, Marker, MarkerClusterer, InfoWindow } from '@react-google-maps/api';
 import {
     Combobox,
     ComboboxInput,
@@ -15,23 +15,6 @@ import usePlacesAutocomplete, {
     getLatLng
 } from 'use-places-autocomplete'
 
-// const cityMarkers = [
-//     {
-//         city: 'New York',
-//         lat: 40.776676,
-//         lng: -73.971321
-//     },
-//     {
-//         city: 'New York',
-//         lat: 40.816357,
-//         lng: -73.962898
-//     },
-//     {
-//         city: 'New York',
-//         lat: 40.650002,
-//         lng: -73.949997
-//     },
-// ]
 
 const Maps = ({ apiKey }) => {
     const { isLoaded } = useLoadScript({
@@ -60,8 +43,10 @@ const containerStyle = {
 const Map = () => {
     const [selected, setSelected] = useState(null)
     const [cityMarkers, setCityMarkers] = useState([])
+    const [selectedMarker, setSelectedMarker] = useState(null)
+    console.log(selectedMarker)
     const mapRef = useRef()
-    console.log(selected, 'selected marker')
+
     const center = useMemo(() => ({
         lat: 38.9072,
         lng: 77.0369,
@@ -87,12 +72,27 @@ const Map = () => {
                     <MarkerClusterer>
                         {(clusterer) =>
                             cityMarkers.map((mark, i) => (
-                                <Marker key={i} position={{ lat: parseFloat(mark.lat), lng: parseFloat(mark.lng) }} clusterer={clusterer} />
+                                <Marker
+                                    label= {{ color: '#00aaff', fontWeight: 'bold', fontSize: '14px', text: `${mark.price.toFixed(2)}` }}
+                                    key={mark.id}
+                                    position={{ lat: parseFloat(mark.lat), lng: parseFloat(mark.lng) }}
+                                    clusterer={clusterer}
+                                    onClick={() => setSelectedMarker(mark)}
+                                >
+                                    {(selectedMarker && mark.id === selectedMarker.id ) ? (
+                                        <InfoWindow>
+                                            <div>
+                                                {selectedMarker.address}
+                                            </div>
+                                        </InfoWindow>
+                                    ) : null}
+                                </Marker>
                             ))}
+
                     </MarkerClusterer>
                 )
-
                 }
+
             </GoogleMap>
         </>
     )
@@ -111,7 +111,7 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
     const handleSelect = async (address) => {
         console.log(address, 'address')
         const res = await fetch(`/api/map/${address}`)
-        if(res.ok) {
+        if (res.ok) {
             const data = await res.json()
             console.log(data.places, 'data in the fetch')
             setCityMarkers(data.places)
