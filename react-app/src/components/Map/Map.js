@@ -87,7 +87,7 @@ const Map = () => {
                     <MarkerClusterer>
                         {(clusterer) =>
                             cityMarkers.map((mark, i) => (
-                                <Marker key={i} position={{ lat: mark.lat, lng: mark.lng }} clusterer={clusterer} />
+                                <Marker key={i} position={{ lat: parseFloat(mark.lat), lng: parseFloat(mark.lng) }} clusterer={clusterer} />
                             ))}
                     </MarkerClusterer>
                 )
@@ -113,8 +113,8 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
         const res = await fetch(`/api/map/${address}`)
         if(res.ok) {
             const data = await res.json()
-            console.log(data, 'data in the fetch')
-            setCityMarkers(data)
+            console.log(data.places, 'data in the fetch')
+            setCityMarkers(data.places)
         }
         setValue(address, false)
         clearSuggestions()

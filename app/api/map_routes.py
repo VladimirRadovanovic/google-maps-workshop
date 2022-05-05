@@ -16,9 +16,13 @@ def load_map_key():
 @map_routes.route('/<string:address>')
 @login_required
 def get_places(address):
-    parsed_city = address[:-17]
+    print(address, '@@@@@@@@@@')
+    parsed_city = address[:-9]
+    print(parsed_city)
     if ',' in parsed_city:
         i = parsed_city.index(',')
         parsed_city = parsed_city[i+2:]
+    print('!!!!!!!!!!!!!!!!!!', parsed_city, '!!!!!!!!!!!!!!!!!!')
     places = Listing.query.filter(Listing.city == parsed_city).all()
-    return [place.to_dict() for place in places]
+    print([place.to_dict() for place in places], places)
+    return {'places': [place.to_dict() for place in places]}

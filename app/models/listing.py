@@ -1,4 +1,6 @@
 from .db import db
+import simplejson as json
+
 
 class Listing(db.Model):
 
@@ -20,5 +22,7 @@ class Listing(db.Model):
             'address': self.address,
             'state': self.state,
             'country': self.country,
-            'price': self.price
+            'price': self.price,
+            'lat': json.dumps(self.lat, use_decimal=True),
+            'lng': json.dumps(self.lng, use_decimal=True)
         }
