@@ -113,6 +113,7 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
         const res = await fetch(`/api/map/${address}`)
         if(res.ok) {
             const data = await res.json()
+            console.log(data, 'data in the fetch')
             setCityMarkers(data)
         }
         setValue(address, false)
