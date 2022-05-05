@@ -15,23 +15,23 @@ import usePlacesAutocomplete, {
     getLatLng
 } from 'use-places-autocomplete'
 
-const cityMarkers = [
-    {
-        city: 'New York',
-        lat: 40.776676,
-        lng: -73.971321
-    },
-    {
-        city: 'New York',
-        lat: 40.816357,
-        lng: -73.962898
-    },
-    {
-        city: 'New York',
-        lat: 40.650002,
-        lng: -73.949997
-    },
-]
+// const cityMarkers = [
+//     {
+//         city: 'New York',
+//         lat: 40.776676,
+//         lng: -73.971321
+//     },
+//     {
+//         city: 'New York',
+//         lat: 40.816357,
+//         lng: -73.962898
+//     },
+//     {
+//         city: 'New York',
+//         lat: 40.650002,
+//         lng: -73.949997
+//     },
+// ]
 
 const Maps = ({ apiKey }) => {
     const { isLoaded } = useLoadScript({
@@ -59,6 +59,7 @@ const containerStyle = {
 
 const Map = () => {
     const [selected, setSelected] = useState(null)
+    const [cityMarkers, setCityMarkers] = useState([])
     const mapRef = useRef()
     console.log(selected, 'selected marker')
     const center = useMemo(() => ({
@@ -71,7 +72,7 @@ const Map = () => {
     return (
         <>
             <div>
-                <PlacesAutocomplete setSelected={(position) => {
+                <PlacesAutocomplete setCityMarkers={setCityMarkers} setSelected={(position) => {
                     setSelected(position)
                     mapRef.current?.panTo(position)
                 }} />
@@ -97,7 +98,7 @@ const Map = () => {
     )
 }
 
-const PlacesAutocomplete = ({ setSelected }) => {
+const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
 
     const {
         ready,
@@ -109,6 +110,11 @@ const PlacesAutocomplete = ({ setSelected }) => {
 
     const handleSelect = async (address) => {
         console.log(address, 'address')
+        const res = await fetch(`/api/map/${address}`)
+        if(res.ok) {
+            const data = await res.json()
+            setCityMarkers(data)
+        }
         setValue(address, false)
         clearSuggestions()
 
