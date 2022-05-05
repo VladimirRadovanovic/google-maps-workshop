@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef, useCallback } from 'react'
 
 import { GoogleMap, useLoadScript, Marker, MarkerClusterer } from '@react-google-maps/api';
 import {
@@ -59,22 +59,28 @@ const containerStyle = {
 
 const Map = () => {
     const [selected, setSelected] = useState(null)
+    const mapRef = useRef()
     console.log(selected, 'selected marker')
-
     const center = useMemo(() => ({
         lat: 38.9072,
         lng: 77.0369,
     }), [])
 
+    const onLoad = useCallback(map => (mapRef.current = map), [])
+
     return (
         <>
             <div>
-                <PlacesAutocomplete setSelected={setSelected} />
+                <PlacesAutocomplete setSelected={(position) => {
+                    setSelected(position)
+                    mapRef.current?.panTo(position)
+                }} />
             </div>
             <GoogleMap
                 mapContainerStyle={containerStyle}
-                center={selected ? selected : center}
+                center={center}
                 zoom={10}
+                onLoad={onLoad}
             >
                 {selected && (
                     <MarkerClusterer>
@@ -102,6 +108,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
     } = usePlacesAutocomplete()
 
     const handleSelect = async (address) => {
+        console.log(address, 'address')
         setValue(address, false)
         clearSuggestions()
 
