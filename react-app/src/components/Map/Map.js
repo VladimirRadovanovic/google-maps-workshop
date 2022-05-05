@@ -15,6 +15,8 @@ import usePlacesAutocomplete, {
     getLatLng
 } from 'use-places-autocomplete'
 
+import iconSvg from '../../images/icon.svg'
+
 
 const Maps = ({ apiKey }) => {
     const { isLoaded } = useLoadScript({
@@ -73,7 +75,8 @@ const Map = () => {
                         {(clusterer) =>
                             cityMarkers.map((mark, i) => (
                                 <Marker
-                                    label= {{ color: '#00aaff', fontWeight: 'bold', fontSize: '14px', text: `${mark.price.toFixed(2)}` }}
+
+                                    label= {{ fontWeight: 'bold', fontSize: '7px', text: `${mark.price.toFixed(2)}` }}
                                     key={mark.id}
                                     position={{ lat: parseFloat(mark.lat), lng: parseFloat(mark.lng) }}
                                     clusterer={clusterer}
