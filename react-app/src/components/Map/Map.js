@@ -46,7 +46,7 @@ const Map = () => {
     const [selected, setSelected] = useState(null)
     const [cityMarkers, setCityMarkers] = useState([])
     const [selectedMarker, setSelectedMarker] = useState(null)
-    console.log(selectedMarker)
+
     const mapRef = useRef()
 
     const center = useMemo(() => ({
@@ -112,11 +112,11 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
     } = usePlacesAutocomplete()
 
     const handleSelect = async (address) => {
-        console.log(address, 'address')
+
         const res = await fetch(`/api/map/${address}`)
         if (res.ok) {
             const data = await res.json()
-            console.log(data.places, 'data in the fetch')
+
             setCityMarkers(data.places)
         }
         setValue(address, false)
