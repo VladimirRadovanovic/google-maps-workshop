@@ -14,13 +14,20 @@ def load_map_key():
     return {'googleMapsAPIKey': key}
 
 
-@map_routes.route('/<string:lat>/<string:lng>')
+@map_routes.route('/<string:lat>/<string:lng>/<string:zoom>')
 @login_required
-def get_places(lat, lng):
-    print(lat, lng, '/n/n!!!!!!!!!!!!!!!!!!!/n/n')
+def get_places(lat, lng, zoom):
+    print(lat, lng, zoom, '/n/n!!!!!!!!!!!!!!!!!!!/n/n')
 
     # parsed_city = address[:-9]
-    distance = 20
+    zoom = int(zoom)
+    distance = 15
+    if zoom > 10:
+        distance = distance / pow(2, zoom - 10)
+    if zoom < 10:
+        distance = distance * pow(2, 10 - zoom)
+    print(distance, '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+
 
     # if ',' in parsed_city:
     #     i = parsed_city.index(',')

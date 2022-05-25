@@ -61,10 +61,11 @@ const Map = () => {
     const trackNewCenter = async() => {
         const lat = mapRef.current?.getCenter().lat()
         const lng = mapRef.current?.getCenter().lng()
-        console.log(lat, lng)
+        const zoom = mapRef.current?.getZoom()
+        console.log(lat, lng, zoom)
         // setNewCenter({lat, lng})
         if(lat && lng) {
-            const res = await fetch(`/api/map/${lat}/${lng}`)
+            const res = await fetch(`/api/map/${lat}/${lng}/${zoom}`)
             if (res.ok) {
                 const data = await res.json()
                 console.log(data.places, 'after fetch!!!!!!!')
@@ -137,8 +138,9 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
         const results = await getGeocode({ address })
         const { lat, lng } = await getLatLng(results[0])
         setSelected({ lat, lng })
+        const zoom = 10
 
-        const res = await fetch(`/api/map/${lat}/${lng}`)
+        const res = await fetch(`/api/map/${lat}/${lng}/${zoom}`)
         if (res.ok) {
             const data = await res.json()
 
@@ -147,9 +149,6 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
         setValue(address, false)
         clearSuggestions()
 
-        // const results = await getGeocode({ address })
-        // const { lat, lng } = await getLatLng(results[0])
-        // setSelected({ lat, lng })
     }
 
     return (
