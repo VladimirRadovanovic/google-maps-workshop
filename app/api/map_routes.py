@@ -19,23 +19,18 @@ def load_map_key():
 def get_places(address, lat, lng):
     print(address, lat, lng, '/n/n!!!!!!!!!!!!!!!!!!!/n/n')
 
-    parsed_city = address[:-9]
+    # parsed_city = address[:-9]
     distance = 20
 
-    if ',' in parsed_city:
-        i = parsed_city.index(',')
-        parsed_city = parsed_city[i+2:]
+    # if ',' in parsed_city:
+    #     i = parsed_city.index(',')
+    #     parsed_city = parsed_city[i+2:]
 
-    # places = Listing.query.filter(Listing.city == parsed_city).all()
 
-    clause = "SQRT(POW(69.1 * (lat - :lati),2) + POW(53.0 * (lng - :long),2)) < :dis"
-# query = meta.Session.query(User).filter(clause).params(lat=my_latitude, long=my_longitude)
+    clause = "SQRT(POW(69.1 * (lat - :lati),2) + POW(69.1 * (:long - lng) * COS(lat / 57.3),2)) < :d"
 
-    places = Listing.query.filter(text(clause)).params(lati=lat, long=lng, dis=distance).all()
+    places = Listing.query.filter(text(clause)).params(lati=lat, long=lng, d=distance).all()
 
-    # places = Listing.execute()
-
-    print(places, '\n!!!!!!!!!!!!!!!!!!!!\n\n')
 
 
     return {'places': [place.to_dict() for place in places]}
