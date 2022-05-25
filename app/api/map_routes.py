@@ -14,10 +14,10 @@ def load_map_key():
     return {'googleMapsAPIKey': key}
 
 
-@map_routes.route('/<string:address>/<string:lat>/<string:lng>')
+@map_routes.route('/<string:lat>/<string:lng>')
 @login_required
-def get_places(address, lat, lng):
-    print(address, lat, lng, '/n/n!!!!!!!!!!!!!!!!!!!/n/n')
+def get_places(lat, lng):
+    print(lat, lng, '/n/n!!!!!!!!!!!!!!!!!!!/n/n')
 
     # parsed_city = address[:-9]
     distance = 20

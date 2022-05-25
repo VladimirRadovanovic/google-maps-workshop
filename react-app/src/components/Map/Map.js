@@ -12,7 +12,7 @@ import {
 import "@reach/combobox/styles.css";
 import usePlacesAutocomplete, {
     getGeocode,
-    getLatLng
+    getLatLng,
 } from 'use-places-autocomplete'
 
 
@@ -47,6 +47,7 @@ const Map = () => {
     const [selected, setSelected] = useState(false)
     const [cityMarkers, setCityMarkers] = useState([])
     const [selectedMarker, setSelectedMarker] = useState(null)
+    const [newCenter, setNewCenter] = useState(null)
 
     const mapRef = useRef()
 
@@ -56,6 +57,22 @@ const Map = () => {
     }), [])
 
     const onLoad = useCallback(map => (mapRef.current = map), [])
+
+    const trackNewCenter = async() => {
+        const lat = mapRef.current?.getCenter().lat()
+        const lng = mapRef.current?.getCenter().lng()
+        console.log(lat, lng)
+        // setNewCenter({lat, lng})
+        if(lat && lng) {
+            const res = await fetch(`/api/map/${lat}/${lng}`)
+            if (res.ok) {
+                const data = await res.json()
+
+                setCityMarkers(prev => [...prev, ...data.places])
+            }
+        }
+        // console.log(nc.lat(), nc.lng(),'!!!!!!!!!!!!new center')
+    }
 
     return (
         <>
@@ -70,6 +87,7 @@ const Map = () => {
                 center={center}
                 zoom={10}
                 onLoad={onLoad}
+                onCenterChanged={trackNewCenter}
             >
                 {selected && (
                     <MarkerClusterer>
@@ -118,7 +136,7 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
         const { lat, lng } = await getLatLng(results[0])
         setSelected({ lat, lng })
 
-        const res = await fetch(`/api/map/${address}/${lat}/${lng}`)
+        const res = await fetch(`/api/map/${lat}/${lng}`)
         if (res.ok) {
             const data = await res.json()
 
