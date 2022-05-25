@@ -67,8 +67,10 @@ const Map = () => {
             const res = await fetch(`/api/map/${lat}/${lng}`)
             if (res.ok) {
                 const data = await res.json()
-
-                setCityMarkers(prev => [...prev, ...data.places])
+                console.log(data.places, 'after fetch!!!!!!!')
+                if(data.places.length > 0) {
+                    setCityMarkers(data.places)
+                }
             }
         }
         // console.log(nc.lat(), nc.lng(),'!!!!!!!!!!!!new center')
