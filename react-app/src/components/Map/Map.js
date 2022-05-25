@@ -15,14 +15,15 @@ import usePlacesAutocomplete, {
     getLatLng
 } from 'use-places-autocomplete'
 
-import iconSvg from '../../images/icon.svg'
 
+
+const libraries = ['places']
 
 const Maps = ({ apiKey }) => {
     const { isLoaded } = useLoadScript({
-        // id: 'google-map-script',
+        id: 'google-map-script',
         googleMapsApiKey: apiKey,
-        libraries: ['places']
+        libraries
     });
 
     return (
@@ -43,7 +44,7 @@ const containerStyle = {
 }
 
 const Map = () => {
-    const [selected, setSelected] = useState(null)
+    const [selected, setSelected] = useState(false)
     const [cityMarkers, setCityMarkers] = useState([])
     const [selectedMarker, setSelectedMarker] = useState(null)
 
@@ -60,7 +61,7 @@ const Map = () => {
         <>
             <div>
                 <PlacesAutocomplete setCityMarkers={setCityMarkers} setSelected={(position) => {
-                    setSelected(position)
+                    setSelected(true)
                     mapRef.current?.panTo(position)
                 }} />
             </div>
@@ -113,7 +114,11 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
 
     const handleSelect = async (address) => {
 
-        const res = await fetch(`/api/map/${address}`)
+        const results = await getGeocode({ address })
+        const { lat, lng } = await getLatLng(results[0])
+        setSelected({ lat, lng })
+
+        const res = await fetch(`/api/map/${address}/${lat}/${lng}`)
         if (res.ok) {
             const data = await res.json()
 
@@ -122,9 +127,9 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
         setValue(address, false)
         clearSuggestions()
 
-        const results = await getGeocode({ address })
-        const { lat, lng } = await getLatLng(results[0])
-        setSelected({ lat, lng })
+        // const results = await getGeocode({ address })
+        // const { lat, lng } = await getLatLng(results[0])
+        // setSelected({ lat, lng })
     }
 
     return (
