@@ -18,14 +18,12 @@ import usePlacesAutocomplete, {
 
 
 const libraries = ['places']
-
 const Maps = ({ apiKey }) => {
     const { isLoaded } = useLoadScript({
         id: 'google-map-script',
         googleMapsApiKey: apiKey,
         libraries
     });
-
     return (
         <>
             {isLoaded && (
@@ -44,44 +42,36 @@ const containerStyle = {
 }
 
 const Map = () => {
-    const [selected, setSelected] = useState(false)
+    const [showMarkers, setShowMarkers] = useState(false)
     const [cityMarkers, setCityMarkers] = useState([])
     const [selectedMarker, setSelectedMarker] = useState(null)
-    const [newCenter, setNewCenter] = useState(null)
-
     const mapRef = useRef()
-
     const center = useMemo(() => ({
         lat: 38.9072,
         lng: 77.0369,
     }), [])
-
     const onLoad = useCallback(map => (mapRef.current = map), [])
-
     const trackNewCenter = async() => {
         const lat = mapRef.current?.getCenter().lat()
         const lng = mapRef.current?.getCenter().lng()
         const zoom = mapRef.current?.getZoom()
-        console.log(lat, lng, zoom)
-        // setNewCenter({lat, lng})
+
         if(lat && lng) {
             const res = await fetch(`/api/map/${lat}/${lng}/${zoom}`)
             if (res.ok) {
                 const data = await res.json()
-                console.log(data.places, 'after fetch!!!!!!!')
                 if(data.places.length > 0) {
                     setCityMarkers(data.places)
                 }
             }
         }
-        // console.log(nc.lat(), nc.lng(),'!!!!!!!!!!!!new center')
     }
 
     return (
         <>
             <div>
                 <PlacesAutocomplete setCityMarkers={setCityMarkers} setSelected={(position) => {
-                    setSelected(true)
+                    setShowMarkers(true)
                     mapRef.current?.panTo(position)
                 }} />
             </div>
@@ -92,7 +82,7 @@ const Map = () => {
                 onLoad={onLoad}
                 onCenterChanged={trackNewCenter}
             >
-                {selected && (
+                {showMarkers && (
                     <MarkerClusterer>
                         {(clusterer) =>
                             cityMarkers?.map((mark, i) => (
