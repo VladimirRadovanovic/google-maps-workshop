@@ -51,16 +51,16 @@ const Map = () => {
         lng: 77.0369,
     }), [])
     const onLoad = useCallback(map => (mapRef.current = map), [])
-    const trackNewCenter = async() => {
+    const trackNewCenter = async () => {
         const lat = mapRef.current?.getCenter().lat()
         const lng = mapRef.current?.getCenter().lng()
         const zoom = mapRef.current?.getZoom()
 
-        if(lat && lng) {
+        if (lat && lng) {
             const res = await fetch(`/api/map/${lat}/${lng}/${zoom}`)
             if (res.ok) {
                 const data = await res.json()
-                if(data.places.length > 0) {
+                if (data.places.length > 0) {
                     setCityMarkers(data.places)
                 }
             }
@@ -88,13 +88,13 @@ const Map = () => {
                             cityMarkers?.map((mark, i) => (
                                 <Marker
 
-                                    label= {{ fontWeight: 'bold', fontSize: '7px', text: `${mark.price.toFixed(2)}` }}
+                                    label={{ fontWeight: 'bold', fontSize: '7px', text: `${mark.price.toFixed(2)}` }}
                                     key={mark.id}
                                     position={{ lat: parseFloat(mark.lat), lng: parseFloat(mark.lng) }}
                                     clusterer={clusterer}
                                     onClick={() => setSelectedMarker(mark)}
                                 >
-                                    {(selectedMarker && mark.id === selectedMarker.id ) ? (
+                                    {(selectedMarker && mark.id === selectedMarker.id) ? (
                                         <InfoWindow>
                                             <div>
                                                 {selectedMarker.address}
