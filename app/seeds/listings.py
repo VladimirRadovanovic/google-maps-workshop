@@ -32,6 +32,36 @@ def seed_listings():
     l10 = Listing(
         address='434 State 369 Rte', city='New York', state='NY', country='USA address', price=720.00, lat=40.837048, lng=-73.865433
     )
+    l11 = Listing(
+        address='555 See Ave', city='New York', state='NY', country='USA address', price=50.00, lat=40.792240, lng=-73.138260
+    )
+    l12 = Listing(
+        address='987 O Ave', city='New York', state='NY', country='USA address', price=20.00, lat=41.763710, lng=-72.685097
+    )
+    l13 = Listing(
+        address='369 Rte', city='New York', state='NY', country='USA address', price=360.00, lat=41.963710, lng=-72.285097
+    )
+    l14 = Listing(
+        address='434 Ocean', city='New York', state='NY', country='USA address', price=71.00, lat=41.837048, lng=-73.865433
+    )
+    l15 = Listing(
+        address='77 Stillman St', city='New York', state='NY', country='USA address', price=33.00, lat=42.837048, lng=-72.865433
+    )
+    l16 = Listing(
+        address='100 Strawberry', city='New York', state='NY', country='USA address', price=1.00, lat=43.837048, lng=-73.865433
+    )
+    l17 = Listing(
+        address='4 Edgartown', city='New York', state='NY', country='USA address', price=545.00, lat=40.220390, lng=-74.012085
+    )
+    l18 = Listing(
+        address='65 Circuit Ave', city='New York', state='NY', country='USA address', price=999.00, lat=40.837048, lng=-74.865433
+    )
+    l19 = Listing(
+        address='41 Vineyard St', city='New York', state='NY', country='USA address', price=77.00, lat=40.637048, lng=-73.865433
+    )
+    l20 = Listing(
+        address='21 Area st', city='New York', state='NY', country='USA address', price=1120.00, lat=40.897048, lng=-74.365433
+    )
 
     db.session.add(l1)
     db.session.add(l2)
@@ -43,6 +73,17 @@ def seed_listings():
     db.session.add(l8)
     db.session.add(l9)
     db.session.add(l10)
+    db.session.add(l11)
+    db.session.add(l12)
+    db.session.add(l13)
+    db.session.add(l14)
+    db.session.add(l15)
+    db.session.add(l16)
+    db.session.add(l17)
+    db.session.add(l18)
+    db.session.add(l19)
+    db.session.add(l20)
+
 
     db.session.commit()
 

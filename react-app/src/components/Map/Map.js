@@ -95,7 +95,7 @@ const Map = () => {
                 {selected && (
                     <MarkerClusterer>
                         {(clusterer) =>
-                            cityMarkers.map((mark, i) => (
+                            cityMarkers?.map((mark, i) => (
                                 <Marker
 
                                     label= {{ fontWeight: 'bold', fontSize: '7px', text: `${mark.price.toFixed(2)}` }}
