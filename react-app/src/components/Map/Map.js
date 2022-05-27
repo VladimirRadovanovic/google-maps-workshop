@@ -12,19 +12,18 @@ import {
 import "@reach/combobox/styles.css";
 import usePlacesAutocomplete, {
     getGeocode,
-    getLatLng
+    getLatLng,
 } from 'use-places-autocomplete'
 
-import iconSvg from '../../images/icon.svg'
 
 
+const libraries = ['places']
 const Maps = ({ apiKey }) => {
     const { isLoaded } = useLoadScript({
-        // id: 'google-map-script',
+        id: 'google-map-script',
         googleMapsApiKey: apiKey,
-        libraries: ['places']
+        libraries
     });
-
     return (
         <>
             {isLoaded && (
@@ -43,24 +42,36 @@ const containerStyle = {
 }
 
 const Map = () => {
-    const [selected, setSelected] = useState(null)
+    const [showMarkers, setShowMarkers] = useState(false)
     const [cityMarkers, setCityMarkers] = useState([])
     const [selectedMarker, setSelectedMarker] = useState(null)
-
     const mapRef = useRef()
-
     const center = useMemo(() => ({
         lat: 38.9072,
         lng: 77.0369,
     }), [])
-
     const onLoad = useCallback(map => (mapRef.current = map), [])
+    const trackNewCenter = async () => {
+        const lat = mapRef.current?.getCenter().lat()
+        const lng = mapRef.current?.getCenter().lng()
+        const zoom = mapRef.current?.getZoom()
+
+        if (lat && lng) {
+            const res = await fetch(`/api/map/${lat}/${lng}/${zoom}`)
+            if (res.ok) {
+                const data = await res.json()
+                if (data.places.length > 0) {
+                    setCityMarkers(data.places)
+                }
+            }
+        }
+    }
 
     return (
         <>
             <div>
                 <PlacesAutocomplete setCityMarkers={setCityMarkers} setSelected={(position) => {
-                    setSelected(position)
+                    setShowMarkers(true)
                     mapRef.current?.panTo(position)
                 }} />
             </div>
@@ -69,20 +80,21 @@ const Map = () => {
                 center={center}
                 zoom={10}
                 onLoad={onLoad}
+                onCenterChanged={trackNewCenter}
             >
-                {selected && (
+                {showMarkers && (
                     <MarkerClusterer>
                         {(clusterer) =>
-                            cityMarkers.map((mark, i) => (
+                            cityMarkers?.map((mark, i) => (
                                 <Marker
 
-                                    label= {{ fontWeight: 'bold', fontSize: '7px', text: `${mark.price.toFixed(2)}` }}
+                                    label={{ fontWeight: 'bold', fontSize: '7px', text: `${mark.price.toFixed(2)}` }}
                                     key={mark.id}
                                     position={{ lat: parseFloat(mark.lat), lng: parseFloat(mark.lng) }}
                                     clusterer={clusterer}
                                     onClick={() => setSelectedMarker(mark)}
                                 >
-                                    {(selectedMarker && mark.id === selectedMarker.id ) ? (
+                                    {(selectedMarker && mark.id === selectedMarker.id) ? (
                                         <InfoWindow>
                                             <div>
                                                 {selectedMarker.address}
@@ -113,7 +125,12 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
 
     const handleSelect = async (address) => {
 
-        const res = await fetch(`/api/map/${address}`)
+        const results = await getGeocode({ address })
+        const { lat, lng } = await getLatLng(results[0])
+        setSelected({ lat, lng })
+        const zoom = 10
+
+        const res = await fetch(`/api/map/${lat}/${lng}/${zoom}`)
         if (res.ok) {
             const data = await res.json()
 
@@ -122,9 +139,6 @@ const PlacesAutocomplete = ({ setSelected, setCityMarkers }) => {
         setValue(address, false)
         clearSuggestions()
 
-        const results = await getGeocode({ address })
-        const { lat, lng } = await getLatLng(results[0])
-        setSelected({ lat, lng })
     }
 
     return (

@@ -8,12 +8,12 @@ const MapContainer = () => {
     const key = useSelector(state => state.map.key)
     const dispatch = useDispatch()
     useEffect(() => {
-        if(!key) {
+        if (!key) {
             dispatch(getKey())
         }
     }, [dispatch, key])
 
-    if(!key) return null
+    if (!key) return null
 
     return (
         <Maps apiKey={key} />
